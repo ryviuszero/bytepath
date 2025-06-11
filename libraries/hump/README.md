@@ -1,8 +1,7 @@
-hump - Helper Utilities for Massive Progression
+HUMP - Helper Utilities for Massive Progression
 ===============================================
 
-**hump** is a small collection of tools for developing games with L&Ouml;VE.
-[![Build Status](https://travis-ci.org/vrld/hump.svg?branch=master)](https://travis-ci.org/vrld/hump)
+__HUMP__ is a small collection of tools for developing games with L&Ouml;VE.
 
 Contents:
 ------------
@@ -23,7 +22,7 @@ You can find the documentation here: [hump.readthedocs.org](http://hump.readthed
 
 License
 =======
-> Copyright (c) 2010-2018 Matthias Richter  
+> Copyright (c) 2010-2013 Matthias Richter  
 >  
 > Permission is hereby granted, free of charge, to any person obtaining a copy  
 > of this software and associated documentation files (the "Software"), to deal  

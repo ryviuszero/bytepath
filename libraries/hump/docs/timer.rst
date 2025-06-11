@@ -26,19 +26,6 @@ easier to produce `juicy games <http://www.youtube.com/watch?v=Fy0aCDmgnxg>`_.
         Timer.update(dt)
     end
 
-List of Functions
------------------
-
-* :func:`Timer.new() <Timer.new>`
-* :func:`Timer.after(delay, func) <Timer.after>`
-* :func:`Timer.script(func) <Timer.script>`
-* :func:`Timer.every(delay, func, count) <Timer.every>`
-* :func:`Timer.during(delay, func, after) <Timer.during>`
-* :func:`Timer.cancel(handle) <Timer.cancel>`
-* :func:`Timer.clear() <Timer.clear>`
-* :func:`Timer.update(dt) <Timer.update>`
-* :func:`Timer.tween(duration, subject, target, method, after, ...) <Timer.tween>`
-
 Function Reference
 ------------------
 
@@ -165,7 +152,7 @@ wait is: ``wait(delay)``.
     end)
 
 
-.. function:: Timer.every(delay, func, count)
+.. function:: Timer.every(delay, func[, count])
 
    :param number delay: Number of seconds between two consecutive function calls.
    :param function func: The function to be called periodically.
@@ -197,7 +184,7 @@ or :func:`Timer.cancel` or :func:`Timer.clear` is called on the timer instance.
     end)
 
 
-.. function:: Timer.during(delay, func, after)
+.. function:: Timer.during(delay, func[, after])
 
    :param number delay: Number of seconds the func will be called.
    :param function func: The function to be called on ``update(dt)``.
@@ -223,7 +210,7 @@ seconds have passed.
 ::
 
     -- shake the camera for one second
-    local orig_x, orig_y = camera:position()
+    local orig_x, orig_y = camera:pos()
     Timer.during(1, function()
         camera:lookAt(orig_x + math.random(-2,2), orig_y + math.random(-2,2))
     end, function()
@@ -316,7 +303,7 @@ Update timers and execute functions if the deadline is reached. Call in
    :param string method: Tweening method, defaults to 'linear' (:ref:`see here
                          <tweening-methods>`, optional).
    :param function after: Function to execute after the tween has finished
-                          (optional).
+                          (optiona).
    :param mixed ...:  Additional arguments to the *tweening* function.
    :returns: A timer handle.
 
@@ -470,7 +457,7 @@ You can add custom interpolation methods by adding them to the `tween` table::
 Access the your method like you would the predefined ones. You can even use the
 modyfing prefixes::
 
-    Timer.tween(5, circle, {radius = 50}, 'in-out-sqrt')
+    Timer.tween(5, 'in-out-sqrt', circle, {radius = 50})
 
 You can also invert and chain functions::
 

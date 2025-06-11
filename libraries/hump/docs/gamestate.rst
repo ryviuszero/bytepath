@@ -5,7 +5,7 @@ hump.gamestate
 
     Gamestate = require "hump.gamestate"
 
-A gamestate encapsulates independent data and behaviour in a single table.
+A gamestate encapsulates independent data an behaviour in a single table.
 
 A typical game could consist of a menu-state, a level-state and a game-over-state.
 
@@ -42,17 +42,6 @@ A typical game could consist of a menu-state, a level-state and a game-over-stat
         Gamestate.switch(menu)
     end
 
-List of Functions
------------------
-
-* :func:`Gamestate.new() <Gamestate.new>`
-* :func:`Gamestate.switch(to, ...) <Gamestate.switch>`
-* :func:`Gamestate.current() <Gamestate.current>`
-* :func:`Gamestate.push(to, ...) <Gamestate.push>`
-* :func:`Gamestate.pop(...) <Gamestate.pop>`
-* :func:`Gamestate.<callback>(...) <Gamestate.<callback>>`
-* :func:`Gamestate.registerEvents([callbacks]) <Gamestate.registerEvents>`
-
 
 .. _callbacks:
 
@@ -82,7 +71,7 @@ callbacks for initalizing, entering and leaving a state:
     Draw on the screen. Called every frame.
 
 ``focus()``
-    Called if the window gets or loses focus.
+    Called if the window gets or looses focus.
 
 ``keypressed()``
     Triggered when a key is pressed.
@@ -106,7 +95,7 @@ callbacks for initalizing, entering and leaving a state:
     Called on quitting the game. Only called on the active gamestate.
 
 When using :func:`Gamestate.registerEvents`, all these callbacks will be called by the
-corresponding LÖVE callbacks and receive the same arguments (e.g.
+corresponding LÖVE callbacks and receive receive the same arguments (e.g.
 ``state:update(dt)`` will be called by ``love.update(dt)``).
 
 **Example**::
@@ -208,7 +197,7 @@ if, and only if, the state was not yet inialized and finally call
 
 
 
-.. function:: Gamestate.current()
+.. function:: Gamestate.Gamestate.current()
 
    :returns: The active gamestate.
 
