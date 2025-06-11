@@ -11,4 +11,9 @@ https://alexarjing.github.io/
 
 前四节基本看完了，现在根据之前的思路，用最新的love11 复现第五节需要达到的效果。
 
+https://github.com/love2d-community/awesome-love2d
+
+这里可以找到一下各种love2d开发游戏需要用到的库
+
+
 
