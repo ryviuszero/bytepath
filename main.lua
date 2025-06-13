@@ -20,34 +20,17 @@ require 'utils'
 
 function love.load()
     timer = Timer()
-    input = Input()
-    camera = Camera()
-
-    input:bind('a', function() print("enter a")end)
-    input:bind('f3', function() 
-        print("enter f3")
-        camera:shake(4, 60, 1) end)
-    print("hello world")
-    -- camera:shake(100, 60, 100)
+    circle = {radius = 24}
+    timer:tween(6, circle, {radius = 96}, 'in-out-cubic')
 end
 
 function love.update(dt)
     -- camera:shake(1, 60, 1)
     timer:update(dt)
-    camera:update(dt)
 end
 
 function love.draw()
-    camera:attach(0, 0, gw, gh)
-    love.graphics.circle('line', gw/2, gh/2, 50)
-        -- self.area:draw()
-  	camera:detach()
-    -- love.graphics.circle('fill', gw/2, gh/2, 50)
-
-    love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.setBlendMode('alpha', 'premultiplied')
-    -- love.graphics.draw(self.main_canvas, 0, 0, 0, sx, sy)
-    love.graphics.setBlendMode('alpha')
+    love.graphics.circle('fill', gw / 2 , gh / 2, circle.radius)
 end
 
 
