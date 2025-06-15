@@ -10,29 +10,59 @@ Camera = require 'libraries/hump/camera'
 Physics = require 'libraries/windfield'
 
 
-
-require 'objects.Shake'
-require 'objects.GameObject'
 require 'utils'
 
 
-
-
 function love.load()
+
+    local object_files = {}
+    recursiveEnumerate('objects', object_files)
+    requireFiles(object_files)
+    local room_files = {}
+    recursiveEnumerate('rooms', room_files)
+    requireFiles(room_files)
+
     timer = Timer()
-    circle = {radius = 24}
-    timer:tween(6, circle, {radius = 96}, 'in-out-cubic')
+    input = Input()
+    camera = Camera()
+
 end
 
 function love.update(dt)
-    -- camera:shake(1, 60, 1)
     timer:update(dt)
 end
 
 function love.draw()
-    love.graphics.circle('fill', gw / 2 , gh / 2, circle.radius)
 end
 
+
+-- Load --
+function recursiveEnumerate(folder, file_list)
+    local items = love.filesystem.getDirectoryItems(folder)
+    for _, item in ipairs(items) do
+        local file = folder .. '/' .. item
+        local info = love.filesystem.getInfo(file)
+        if info.type == "file" then
+            table.insert(file_list, file)
+        elseif info.type == "directory" then
+            recursiveEnumerate(file, file_list)
+        end
+    end
+end
+
+function requireFiles(files)
+    for _, file in ipairs(files) do
+        local file = file:sub(1, -5)
+        require(file)
+    end
+end
+
+function printFiles(files)
+    for _, file in ipairs(files) do
+        local file = file:sub(1, -5)
+        print(file)
+    end
+end
 
 
 local love_errorhandler = love.errhand
