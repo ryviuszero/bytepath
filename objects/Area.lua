@@ -7,7 +7,7 @@ end
 
 function Area:update(dt)
     -- world 和物理引擎有关
-    if self.world then self.world.update(dt) end
+    if self.world then self.world:update(dt) end
 
     for i = #self.game_objects, 1, -1 do
         local game_object = self.game_objects[i]

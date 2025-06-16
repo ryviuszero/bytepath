@@ -10,7 +10,7 @@ function Player:new(area, x, y, opts)
     self.r = -math.pi / 2
     self.rv = 1.66 * math.pi
     self.v = 0
-    self.max_c = 100
+    self.max_v = 100
     self.a = 100
 end
 
@@ -21,7 +21,7 @@ function Player:update(dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
     if input:down('right') then self.r = self.r + self.rv * dt end
 
-    self.v = math.min(self.v + self.a * dt, self.max_c)
+    self.v = math.min(self.v + self.a * dt, self.max_v)
     -- 为什么 碰撞还需要更新速度？
     self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
 end

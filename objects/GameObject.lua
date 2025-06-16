@@ -17,8 +17,8 @@ end
 
 function GameObject:update(dt)
     if self.timer then self.timer:update(dt) end
-    -- 在当前的代码中似乎没有出现 Collider的运用
-    -- if self.collider then self.x, self.y = self.collider:getPosition() end ?
+    -- 没想到, 这里位置的更新依赖碰撞体位置的更新
+    if self.collider then self.x, self.y = self.collider:getPosition() end
 end
 
 function GameObject:draw()
