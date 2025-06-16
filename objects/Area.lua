@@ -35,7 +35,7 @@ function Area:addPhysicsWorld()
     self.world = Physics.newWorld(0, 0, true)
 end
 
-function Area:destory()
+function Area:destroy()
     for i = #self.game_objects, 1, -1 do
         local game_object = self.game_objects[i]
         game_object:destroy()

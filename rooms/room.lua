@@ -15,8 +15,8 @@ function Room:draw()
 
 end
 
-function Room:destory()
-    self.area:destory()
+function Room:destroy()
+    self.area:destroy()
     self.area = nil
 end
 

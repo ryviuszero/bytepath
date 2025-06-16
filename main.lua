@@ -89,6 +89,7 @@ function init_input()
     end)
     input:bind('f2', function() gotoRoom("Stage") end)
     input:bind('f3', function() 
+        print("destroying current room")
         if current_room then
             current_room:destroy()
             current_room = nil
