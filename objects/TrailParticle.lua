@@ -1,0 +1,15 @@
+TrailParticle = GameObject:extend()
+
+function TrailParticle:new(area, x, y, opts)
+    TrailParticle.super:new(area, x, y, opts)
+    self.depth = 75
+
+    self.r = opts.r or random(2, 4)
+    self.timer:tween(opts.d or random(0.3, 0.5), self, {r = 0}, 'linear', function() self.dead = true end)
+end
+
+function TrailParticle:draw(dt)
+    love.graphics.setColor(self.color)
+    love.graphics.circle('fill', self.x, self.y, self.r)
+    love.graphics.setColor(255, 255, 255)
+end

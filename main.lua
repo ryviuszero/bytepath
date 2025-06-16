@@ -8,9 +8,11 @@ Input = require 'libraries/boipushy/Input'
 fn = require 'libraries/moses/moses'
 Camera = require 'libraries/hump/camera'
 Physics = require 'libraries/windfield'
+Vector = require 'libraries/hump/vector-light'
 
 
 require 'utils'
+require 'globals'
 
 
 function love.load()

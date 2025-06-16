@@ -10,23 +10,162 @@ function Player:new(area, x, y, opts)
     self.r = -math.pi / 2
     self.rv = 1.66 * math.pi
     self.v = 0
-    self.max_v = 100
+    self.base_max_v = 100
+    self.max_v = self.base_max_v
+
     self.a = 100
+
+    -- 氮气加速
+    self.boosting = false
+    -- 频率行为
+    self.timer:every(0.24, function() self:shoot() end)
+    self.timer:every(5, function() self:tick() end)
+
+    self.ship = 'Fighter' -- 'Striker'
+    self:init_ship()
+
+    -- Boost Trail
+    -- 这个是用来绘制尾焰的
+    self.trail_color = skill_point_color
+    self.timer.every(0.01, function()
+        if self.ship == 'Fighter' then
+            self.area:addGameObject(
+            'TrailParticle',
+            self.x - 0.9 * self.w * math.cos(self.r) + 0.2*self.w*math.cos(self.r - math.pi/2),
+            self.y - 0.9*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r - math.pi/2),
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}
+            )
+            self.area:addGameObject('TrailParticle', 
+            self.x - 0.9*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r + math.pi/2), 
+            self.y - 0.9*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r + math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color})
+        elseif self.ship == 'Striker' then
+            self.area:addGameObject('TrailParticle',
+            self.x - 1.0*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r - math.pi/2), 
+            self.y - 1.0*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r - math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+            self.area:addGameObject('TrailParticle',
+            self.x - 1.0*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r + math.pi/2), 
+            self.y - 1.0*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r + math.pi/2), 
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}) 
+        end
+    end)
+
+end
+
+function Player:init_ship()
+    if self.ship == 'Fighter' then
+        self.polygons[1] = {
+            self.w, 0,
+            self.w/2, -self.w/2,
+            -self.w/2, -self.w/2,
+            -self.w, 0,
+            -self.w/2, self.w/2,
+            self.w/2, self.w/2,
+        }
+
+        self.polygons[2] = {
+            self.w/2, -self.w/2,
+            0, -self.w,
+            -self.w - self.w/2, -self.w,
+            -3*self.w/4, -self.w/4,
+            -self.w/2, -self.w/2,
+        }
+
+        self.polygons[3] = {
+            self.w/2, self.w/2,
+            -self.w/2, self.w/2,
+            -3*self.w/4, self.w/4,
+            -self.w - self.w/2, self.w,
+            0, self.w,
+        }
+
+    elseif self.ship == 'Striker' then
+        self.polygons[1] = {
+            self.w, 0,
+            self.w/2, -self.w/2,
+            -self.w/2, -self.w/2,
+            -self.w, 0,
+            -self.w/2, self.w/2,
+            self.w/2, self.w/2,
+        }
+
+        self.polygons[2] = {
+            0, self.w/2,
+            -self.w/4, self.w,
+            0, self.w + self.w/2,
+            self.w, self.w,
+            0, 2*self.w,
+            -self.w/2, self.w + self.w/2,
+            -self.w, 0,
+            -self.w/2, self.w/2,
+        }
+
+        self.polygons[3] = {
+            0, -self.w/2,
+            -self.w/4, -self.w,
+            0, -self.w - self.w/2,
+            self.w, -self.w,
+            0, -2*self.w,
+            -self.w/2, -self.w - self.w/2,
+            -self.w, 0,
+            -self.w/2, -self.w/2,
+        }
+    end
+
+end
+
+function Player:shoot()
+    
+end
+
+function Player:tick()
+    self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
 end
 
 function Player:update(dt)
     Player.super.update(self, dt)
-    
 
+    -- Collision
+    if self.x < 0 or self.x > gw or
+       self.y < 0 or self.y > gh then
+        self.dead = true
+    end
+
+    -- Boost
+    self.max_v = self.base_max_v
+    self.boosting = false
+    
+    if input:down('up') then
+        self.boosting = true
+        self.max_v = self.base_max_v * 1.5
+    end
+
+    if input:down('down') then
+        self.boosting = true
+        self.max_v = self.base_max_v * 0.5
+    end
+    self.trail_color = skill_point_color
+    if self.boosting then
+        self.train_color = boost_color 
+    end
+
+    -- Movement
     if input:down('left') then self.r = self.r - self.rv * dt end
     if input:down('right') then self.r = self.r + self.rv * dt end
 
     self.v = math.min(self.v + self.a * dt, self.max_v)
-    -- 为什么 碰撞还需要更新速度？
     self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
 end
 
 function Player:draw()
-    love.graphics.circle('line', self.x, self.y, self.w)
-    love.graphics.line(self.x, self.y,  self.x + 2 * self.w * math.cos(self.r), self.y + 2*self.w*math.sin(self.r))
+   pushRotate(self.x, self.y, self.r)
+   love.graphics.setColor(default_color)
+   for _, verticle_group in ipairs(self.polygons) do
+       local points = fn.map(verticle_group, function(k, v) if k % 2 == 1 then return self.x + v + random(-1, 1) else return self.y + v + random(-1, 1) end end)
+       love.graphics.polygon('line', points)
+   end
+   love.graphics.pop()
 end
+
+
