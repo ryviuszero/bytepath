@@ -1,6 +1,7 @@
-default_color = {222, 222, 222}
-background_color = {16, 16, 16}
-ammo_color = {123, 200, 164}
-boost_color = {76, 195, 217}
-hp_color = {241, 103, 69}
-skill_point_color = {255, 198, 93}
+default_color = {222 / 255, 222 / 255, 222 / 255}
+background_color = {16 / 255, 16 / 255, 16 / 255}
+ammo_color = {123 / 255, 200 / 255, 164 / 255}
+boost_color = {76 / 255, 195 / 255, 217 / 255}
+hp_color = {241 / 255, 103 / 255, 69 / 255}
+skill_point_color = {255 / 255, 198 / 255, 93 / 255}
+

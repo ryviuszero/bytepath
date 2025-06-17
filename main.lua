@@ -22,7 +22,7 @@ function love.load()
 
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.setLineStyle('rough')
-    -- love.graphics.setBackgroundColor(background_color)
+    love.graphics.setBackgroundColor(background_color)
 
     local object_files = {}
     recursiveEnumerate('objects', object_files)

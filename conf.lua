@@ -7,7 +7,7 @@ sy = 1
 
 function love.conf(t)
     t.identity = nil -- The name of the save directory (string)
-    t.version = "11.4" -- The LÖVE version this game was made for (string)
+    t.version = "11.5" -- The LÖVE version this game was made for (string)
     t.console = false -- Attach a console (boolean, Windows only)
 
     t.window.title = "BYTEPATH" -- The window title (string)

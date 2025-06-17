@@ -27,6 +27,13 @@ function Stage:new()
     self.area:addGameObject('Player', gw / 2, gh / 2)
 end
 
+function Stage:update(dt)
+    camera.smoother = Camera.smooth.damped(5)
+    camera:lockPosition(dt, gw/2, gh/2)
+
+    Stage.super.update(self, dt)
+end
+
 function Stage:draw()
     love.graphics.setCanvas(self.main_canvas)
     love.graphics.clear()
