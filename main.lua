@@ -11,6 +11,7 @@ Physics = require 'libraries/windfield'
 Vector = require 'libraries/hump/vector-light'
 
 
+require 'GameObject'
 require 'utils'
 require 'globals'
 
@@ -49,11 +50,31 @@ end
 
 function love.draw()
     if current_room then current_room:draw() end
+
+    -- flash_frames: 抽帧？用来显示慢动作的效果？
+    if flash_frames then
+        flash_frames = flash_frames - 1
+        if flash_frames == -1 then flash_frames = nil end
+    end
+    if flash_frames then
+        love.graphics.setColor(background_color)
+        love.graphics.rectangle('fill', 0, 0, sx * gw, sy * gh)
+        love.graphics.setColor(255, 255, 255)
+    end
 end
 
 function resize(s)
     love.window.setMode(s*gw, s*gh)
     sx, sy = s, s
+end
+
+function flash(frames)
+    flash_flames = frames
+end
+
+function slow(amount, duration)
+    slow_amount = amount
+    timer:tween('slow', duration, _G, {slow_amount = 1}, 'in-out-cubic')
 end
 
 
@@ -99,6 +120,8 @@ function init_input()
     end)
     input:bind('left', 'left')
     input:bind('right', 'right')
+    input:bind('up', 'up')
+    input:bind('down', 'down')
 end
 
 -- Room --

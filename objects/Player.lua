@@ -12,7 +12,6 @@ function Player:new(area, x, y, opts)
     self.v = 0
     self.base_max_v = 100
     self.max_v = self.base_max_v
-
     self.a = 100
 
     -- 氮气加速
@@ -22,12 +21,13 @@ function Player:new(area, x, y, opts)
     self.timer:every(5, function() self:tick() end)
 
     self.ship = 'Fighter' -- 'Striker'
+    self.polygons = {}
     self:init_ship()
 
     -- Boost Trail
     -- 这个是用来绘制尾焰的
     self.trail_color = skill_point_color
-    self.timer.every(0.01, function()
+    self.timer:every(0.01, function()
         if self.ship == 'Fighter' then
             self.area:addGameObject(
             'TrailParticle',
@@ -116,11 +116,22 @@ function Player:init_ship()
 end
 
 function Player:shoot()
-    
+    local d = 1.2 * self.w
+    self.area:addGameObject('ShootEffect', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {player = self, d = d})
+    self.area:addGameObject('Projectile', self.x +1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r})
 end
 
 function Player:tick()
     self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
+end
+
+function Player:die()
+    self.dead = true
+    flash(12)
+    camera:shake(6, 60, 0.4)
+    -- slow的作用？
+    slow(0.15, 1)
+    for i = 1, love.math.random(8, 12) do self.area:addGameObject("ExplodeParticle", self.x, self.y) end
 end
 
 function Player:update(dt)
@@ -129,7 +140,7 @@ function Player:update(dt)
     -- Collision
     if self.x < 0 or self.x > gw or
        self.y < 0 or self.y > gh then
-        self.dead = true
+        self:die()
     end
 
     -- Boost
@@ -147,7 +158,7 @@ function Player:update(dt)
     end
     self.trail_color = skill_point_color
     if self.boosting then
-        self.train_color = boost_color 
+        self.trail_color = boost_color
     end
 
     -- Movement
