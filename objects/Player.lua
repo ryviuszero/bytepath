@@ -28,13 +28,13 @@ function Player:new(area, x, y, opts)
     -- 这个是用来绘制尾焰的
     self.trail_color = skill_point_color
     self.timer:every(0.01, function()
+        print("Fighter")
         if self.ship == 'Fighter' then
             self.area:addGameObject(
             'TrailParticle',
-            self.x - 0.9 * self.w * math.cos(self.r) + 0.2*self.w*math.cos(self.r - math.pi/2),
+            self.x - 0.9*self.w * math.cos(self.r) + 0.2*self.w*math.cos(self.r - math.pi/2),
             self.y - 0.9*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r - math.pi/2),
-            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color}
-            )
+            {parent = self, r = random(2, 4), d = random(0.15, 0.25), color = self.trail_color})
             self.area:addGameObject('TrailParticle', 
             self.x - 0.9*self.w*math.cos(self.r) + 0.2*self.w*math.cos(self.r + math.pi/2), 
             self.y - 0.9*self.w*math.sin(self.r) + 0.2*self.w*math.sin(self.r + math.pi/2), 

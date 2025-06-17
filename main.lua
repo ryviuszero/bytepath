@@ -22,6 +22,7 @@ function love.load()
 
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.setLineStyle('rough')
+    -- love.graphics.setBackgroundColor(background_color)
 
     local object_files = {}
     recursiveEnumerate('objects', object_files)
@@ -36,16 +37,20 @@ function love.load()
 
     init_input()
 
+    current_room = nil
     gotoRoom("Stage")
-
+    
     resize(2)
+
+    -- 这里的slow_amount是用来控制慢动作的速度的?
+    slow_amount = 1
 
 end
 
 function love.update(dt)
-    timer:update(dt)
-    camera:update(dt)
-    if current_room then current_room:update(dt) end
+    timer:update(dt * slow_amount)
+    camera:update(dt * slow_amount)
+    if current_room then current_room:update(dt * slow_amount) end
 end
 
 function love.draw()
@@ -69,11 +74,12 @@ function resize(s)
 end
 
 function flash(frames)
-    flash_flames = frames
+    flash_frames = frames
 end
 
 function slow(amount, duration)
     slow_amount = amount
+    -- timer:tween 的各个参数后面也了解一下？
     timer:tween('slow', duration, _G, {slow_amount = 1}, 'in-out-cubic')
 end
 
@@ -113,7 +119,7 @@ function init_input()
     input:bind('f2', function() gotoRoom("Stage") end)
     input:bind('f3', function() 
         print("destroying current room")
-        if current_room then
+        if current_room then    
             current_room:destroy()
             current_room = nil
         end
@@ -171,7 +177,6 @@ function type_name(o)
         global_type_table[0] = "table"
     end
     return global_type_table[getmetatable(o) or 0] or "Unknown"
-
 
 end
 

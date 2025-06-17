@@ -21,12 +21,17 @@ end
 
 function Area:draw()
     -- if self.world then self.world:draw() end
+    -- 引入图层的概念, 先画 depth, creation_time 小的
+    table.sort(self.game_objects, function (a, b)
+        if a.depth == b.depth then return a.creation_time < b.creation_time
+        else return a.depth < b.depth end
+    end)
     for _, game_object in ipairs(self.game_objects) do game_object:draw() end
 end
 
 function Area:addGameObject(game_object_type, x, y, opts)
     local opts = opts or {}
-    local game_object = _G[game_object_type](self, x, y, opts)
+    local game_object = _G[game_object_type](self, x or 0, y or 0, opts)
     table.insert(self.game_objects, game_object)
     return game_object
 end

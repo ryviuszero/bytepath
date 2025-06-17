@@ -1,7 +1,7 @@
 ShootEffect = GameObject:extend()
 
 function ShootEffect:new(area, x, y, opts)
-    ShootEffect.super:new(area, x, y, opts)
+    ShootEffect.super.new(self, area, x, y, opts)
     self.depth = 75
 
     self.w = 8

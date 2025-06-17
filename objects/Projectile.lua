@@ -1,7 +1,7 @@
 Projectile = GameObject:extend()
 
 function Projectile:new(area, x, y, opts)
-    Projectile.super:new(area, x, y, opts)
+    Projectile.super.new(self, area, x, y, opts)
 
     self.s = opts.s or 2.5
     self.v = opts.v or 200
@@ -28,6 +28,11 @@ function Projectile:update(dt)
     end
 end
 
+function Projectile:draw()
+    love.graphics.setColor(default_color)
+
+    love.graphics.circle('line', self.x, self.y, self.s)
+end
 
 function Projectile:die()
     self.dead = true

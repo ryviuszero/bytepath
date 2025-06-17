@@ -23,7 +23,7 @@ end
 Stage = Room:extend()
 
 function Stage:new()
-    Stage.super:new()
+    Stage.super.new(self)
     self.area:addGameObject('Player', gw / 2, gh / 2)
 end
 
