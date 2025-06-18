@@ -1,0 +1,2 @@
+AmmoEffect = GameObject:extend()
+

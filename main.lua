@@ -9,8 +9,10 @@ fn = require 'libraries/moses/moses'
 Camera = require 'libraries/hump/camera'
 Physics = require 'libraries/windfield'
 Vector = require 'libraries/hump/vector-light'
+draft = require('libraries/draft/draft')()
 
 
+require 'libraries/utf8'
 require 'GameObject'
 require 'utils'
 require 'globals'
@@ -24,6 +26,7 @@ function love.load()
     love.graphics.setLineStyle('rough')
     love.graphics.setBackgroundColor(background_color)
 
+    loadFonts('resources/fonts')
     local object_files = {}
     recursiveEnumerate('objects', object_files)
     requireFiles(object_files)
@@ -104,6 +107,22 @@ function requireFiles(files)
         require(file)
     end
 end
+
+function loadFonts(path)
+    fonts = {}
+    local font_paths = {}
+    recursiveEnumerate(path, font_paths)
+    for i = 8, 16, 1 do
+        for _, font_path in pairs(font_paths) do
+            local last_forward_slash_index = font_path:find("/[^/]*$")
+            local font_name = font_path:sub(last_forward_slash_index+1, -5)
+            local font = love.graphics.newFont(font_path, i)
+            font:setFilter('nearest', 'nearest')
+            fonts[font_name .. '_' .. i] = font
+        end
+    end
+end
+
 
 -- bind input
 function init_input()

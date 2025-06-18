@@ -6,6 +6,8 @@ function Player:new(area, x, y, opts)
     self.w, self.h = 12, 12
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
     self.collider:setObject(self)
+    -- TODO 这个是干什么的？
+    self.collider:setCollisionClass('Player')
 
     self.r = -math.pi / 2
     self.rv = 1.66 * math.pi
@@ -14,11 +16,30 @@ function Player:new(area, x, y, opts)
     self.max_v = self.base_max_v
     self.a = 100
 
-    -- 氮气加速
-    self.boosting = false
-    -- 频率行为
-    self.timer:every(0.24, function() self:shoot() end)
+
     self.timer:every(5, function() self:tick() end)
+
+    -- Boost
+    self.max_boost = 100
+    self.boost = self.max_boost
+    self.boosting = false
+    self.can_boost = true
+    self.boost_timer = 0
+    self.boost_cooldown = 2
+
+    -- HP
+    self.max_hp = 100
+    self.hp = self.max_hp
+
+    -- Ammo
+    self.max_ammo = 100
+    self.ammo = self.max_ammo
+
+
+    -- Attacks
+    self.shoot_timer = 0
+    self.shoot_cooldown = 0.24
+    self:setAttack('Double')
 
     self.ship = 'Fighter' -- 'Striker'
     self.polygons = {}
@@ -118,10 +139,30 @@ function Player:shoot()
     local d = 1.2 * self.w
     self.area:addGameObject('ShootEffect', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {player = self, d = d})
     self.area:addGameObject('Projectile', self.x +1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r})
+
+    if self.attack == 'Neutral' then
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
+    elseif self.attack == 'Double' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r + math.pi/12), self.y + 1.5*d*math.sin(self.r + math.pi/12), {r = self.r + math.pi/12, attack = self.attack})
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r - math.pi/12), self.y + 1.5*d*math.sin(self.r - math.pi/12), {r = self.r - math.pi/12, attack = self.attack})
+    end
+
+    if self.ammo <= 0 then
+        self:setAttack('Neutral')
+        self.ammo = self.max_ammo
+    end
 end
+
 
 function Player:tick()
     self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
+end
+
+function Player:setAttack(attack)
+    self.attack = attack
+    self.shoot_cooldown = attacks[attack].cooldown
+    self.ammo = self.max_ammo
 end
 
 function Player:die()
@@ -142,22 +183,56 @@ function Player:update(dt)
         self:die()
     end
 
+    -- TODO collider 的这些东西也需要深入了解一下
+    if self.collider:enter('Collectable') then
+        local collision_data = self.collider:getEnterCollisionData('Collectable')
+        local object = collision_data.collider:getObject()
+        if object then
+            object:die()
+            self:addAmmo(5)
+        elseif object:is(Boost) then
+            object:die()
+        end
+    end
+
     -- Boost
+    self.boost = math.min(self.boost + 10 * dt, self.max_boost)
+    self.boost_timer = self.boost_timer + dt
+    if self.boost_timer > self.boost_cooldown then self.can__boost = true end
     self.max_v = self.base_max_v
     self.boosting = false
     
     if input:down('up') then
         self.boosting = true
         self.max_v = self.base_max_v * 1.5
+        self.boost = self.boost - 50 * dt
+        if self.boost <= 1 then
+            self.boosting = false
+            self.can_boost = false
+            self.boost_timer = 0
+        end
     end
 
     if input:down('down') then
         self.boosting = true
         self.max_v = self.base_max_v * 0.5
+        self.boost = self.boost - 50 * dt
+        if self.boost <= 1 then
+            self.boosting = false
+            self.can_boost = false
+            self.boost_timer = 0
+        end
     end
     self.trail_color = skill_point_color
     if self.boosting then
         self.trail_color = boost_color
+    end
+
+    -- Shoot
+    self.shoot_timer = self.shoot_timer + dt
+    if self.shoot_timer > self.shoot_cooldown then
+        self.shoot_timer = 0
+        self:shoot()
     end
 
     -- Movement
@@ -179,3 +254,6 @@ function Player:draw()
 end
 
 
+function Player:addAmmo(amount)
+    self.ammo = math.min(self.ammo + amount, self.max_ammo)
+end
