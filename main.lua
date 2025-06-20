@@ -14,8 +14,9 @@ draft = require('libraries/draft/draft')()
 
 require 'libraries/utf8'
 require 'GameObject'
-require 'utils'
 require 'globals'
+require 'utils'
+
 
 
 function love.load()

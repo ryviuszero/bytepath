@@ -5,7 +5,7 @@ function Projectile:new(area, x, y, opts)
 
     self.s = opts.s or 2.5
     self.v = opts.v or 200
-    self.color = hp_color
+    self.color = attacks[self.attack].color
 
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
     self.collider:setObject(self)
