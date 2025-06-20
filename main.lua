@@ -8,7 +8,7 @@ Input = require 'libraries/boipushy/Input'
 fn = require 'libraries/moses/moses'
 Camera = require 'libraries/hump/camera'
 Physics = require 'libraries/windfield'
-Vector = require 'libraries/hump/vector-light'
+Vector = require 'libraries/hump/vector'
 draft = require('libraries/draft/draft')()
 
 
@@ -25,7 +25,7 @@ function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.setLineStyle('rough')
     love.graphics.setBackgroundColor(background_color)
-
+   
     loadFonts('resources/fonts')
     local object_files = {}
     recursiveEnumerate('objects', object_files)

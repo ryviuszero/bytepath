@@ -1,4 +1,3 @@
--- TODO 全是cp的, 后面有机会再看细节吧
 InfoText = GameObject:extend()
 
 function InfoText:new(area, x, y, opts)

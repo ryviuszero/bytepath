@@ -138,6 +138,8 @@ function World:addCollisionClass(collision_class_name, collision_class)
             table.insert(self.collision_classes[c_class_name].post, collision_class_name)
         end
     end
+
+    self:collisionClassesSet()
 end
 
 function World:collisionClassesSet()
@@ -625,9 +627,7 @@ function World:addJoint(joint_type, ...)
 end
 
 function World:removeJoint(joint)
-    if not joint:isDestroyed() then
-        joint:destroy()
-    end
+    joint:destroy()
 end
 
 function World:destroy()
@@ -780,7 +780,7 @@ end
 
 function Collider:enter(other_collision_class_name)
     local events = self.collision_events[other_collision_class_name]
-    if events and #events >= 1  then
+    if #events >= 1  then
         for _, e in ipairs(events) do
             if e.collision_type == 'enter' then
                 if not self.collision_stay[other_collision_class_name] then self.collision_stay[other_collision_class_name] = {} end
@@ -798,7 +798,7 @@ end
 
 function Collider:exit(other_collision_class_name)
     local events = self.collision_events[other_collision_class_name]
-    if events and #events >= 1  then
+    if #events >= 1  then
         for _, e in ipairs(events) do
             if e.collision_type == 'exit' then
                 if self.collision_stay[other_collision_class_name] then

@@ -24,12 +24,20 @@ Stage = Room:extend()
 
 function Stage:new()
     Stage.super.new(self)
-    self.area:addGameObject('Player', gw / 2, gh / 2)
+    -- 碰撞的分层？
+    self.area.world:addCollisionClass('Player')
+    self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile', 'Player'}})
+    self.area.world:addCollisionClass('Collectable', {ignores = {'Collectable', 'Projectile'}})
+
+    self.player = self.area:addGameObject('Player', gw / 2, gh / 2)
+
+    input:bind('p', function() self.area:addGameObject('Boost', 0, 0) end)
 end
 
 function Stage:update(dt)
     camera.smoother = Camera.smooth.damped(5)
     camera:lockPosition(dt, gw/2, gh/2)
+
 
     Stage.super.update(self, dt)
 end

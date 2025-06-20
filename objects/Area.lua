@@ -54,5 +54,15 @@ function Area:destroy()
     end
 end
 
+function Area:getAllGameObjectsThat(filter)
+    local out = {}
+    for _, game_object in pairs(self.game_objects) do
+        if filter(game_object) then
+            table.insert(out, game_object)
+        end
+    end
+    return out
+end
+
 
 

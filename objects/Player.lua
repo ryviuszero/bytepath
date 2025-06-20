@@ -6,7 +6,6 @@ function Player:new(area, x, y, opts)
     self.w, self.h = 12, 12
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
     self.collider:setObject(self)
-    -- TODO 这个是干什么的？
     self.collider:setCollisionClass('Player')
 
     self.r = -math.pi / 2
@@ -149,7 +148,7 @@ function Player:shoot()
     end
 
     if self.ammo <= 0 then
-        self:setAttack('Neutral')
+        self:setAttack('Double')
         self.ammo = self.max_ammo
     end
 end
@@ -187,7 +186,7 @@ function Player:update(dt)
     if self.collider:enter('Collectable') then
         local collision_data = self.collider:getEnterCollisionData('Collectable')
         local object = collision_data.collider:getObject()
-        if object then
+        if object:is(Ammo) then
             object:die()
             self:addAmmo(5)
         elseif object:is(Boost) then
@@ -198,11 +197,11 @@ function Player:update(dt)
     -- Boost
     self.boost = math.min(self.boost + 10 * dt, self.max_boost)
     self.boost_timer = self.boost_timer + dt
-    if self.boost_timer > self.boost_cooldown then self.can__boost = true end
+    if self.boost_timer > self.boost_cooldown then self.can_boost = true end
     self.max_v = self.base_max_v
     self.boosting = false
     
-    if input:down('up') then
+    if input:down('up') and self.boost > 1 and self.can_boost then
         self.boosting = true
         self.max_v = self.base_max_v * 1.5
         self.boost = self.boost - 50 * dt
@@ -213,7 +212,7 @@ function Player:update(dt)
         end
     end
 
-    if input:down('down') then
+    if input:down('down') and self.boost > 1 and self.can_boost then
         self.boosting = true
         self.max_v = self.base_max_v * 0.5
         self.boost = self.boost - 50 * dt

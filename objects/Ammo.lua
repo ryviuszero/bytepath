@@ -5,6 +5,8 @@ Ammo = GameObject:extend()
 
     self.w, self.h = 8, 8
     self.collider = self.area.world:newRectangleCollider(self.x, self.y, self.w, self.h)
+    self.collider:setObject(self)
+    self.collider:setCollisionClass('Collectable')
     self.collider:setFixedRotation(false)
     self.r = random(0, 2 * math.pi)
     self.v = random(10, 20)
@@ -17,7 +19,7 @@ Ammo = GameObject:extend()
 
 
 function Ammo:update(dt)
-    Ammo.supper.update(self, dt)
+    Ammo.super.update(self, dt)
 
     local target = current_room.player
     if target then
