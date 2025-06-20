@@ -1,5 +1,8 @@
 love使用笔记
 
+https://github.com/a327ex/blog/issues/30
+
+
 1. 调试的时候console不能输出, launch文件中的 love 换成 lovec 就可以了.
 
 第二节:库的使用,讲解了这个游戏中需要使用到的一些库.
@@ -20,7 +23,11 @@ https://github.com/love2d-community/awesome-love2d
 讲了如何实现一些玩家相关的特效
 
 07 加了加速限制，弹药
+
 08 敌人相关的
+
+画敌人相关的对象，石头，发射物等等
+
 09 游戏循环？
 
 07/08/09 一起看，这三个可以

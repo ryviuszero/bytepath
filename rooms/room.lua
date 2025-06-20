@@ -25,9 +25,12 @@ Stage = Room:extend()
 function Stage:new()
     Stage.super.new(self)
     -- 碰撞的分层？
+    self.area.world:addCollisionClass('Enemy')
     self.area.world:addCollisionClass('Player')
     self.area.world:addCollisionClass('Projectile', {ignores = {'Projectile', 'Player'}})
     self.area.world:addCollisionClass('Collectable', {ignores = {'Collectable', 'Projectile'}})
+    self.area.world:addCollisionClass('EnemyProjectile', {ignores = {'EnemyProjectile', 'Projectile', 'Enemy'}})
+
 
     self.player = self.area:addGameObject('Player', gw / 2, gh / 2)
 
