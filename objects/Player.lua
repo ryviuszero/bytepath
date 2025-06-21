@@ -3,6 +3,7 @@ Player = GameObject:extend()
 function Player:new(area, x, y, opts)
     Player.super:new(area, x, y, opts)
 
+    self.x, self.y = x, y
     self.w, self.h = 12, 12
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
     self.collider:setObject(self)
@@ -38,7 +39,7 @@ function Player:new(area, x, y, opts)
     -- Attacks
     self.shoot_timer = 0
     self.shoot_cooldown = 0.24
-    self:setAttack('Double')
+    self:setAttack('Neutral')
 
     self.ship = 'Fighter' -- 'Striker'
     self.polygons = {}
@@ -147,7 +148,7 @@ function Player:shoot()
     end
 
     if self.ammo <= 0 then
-        self:setAttack('Double')
+        self:setAttack('Neutral')
         self.ammo = self.max_ammo
     end
 end
@@ -165,7 +166,7 @@ end
 
 function Player:hit(damage)
     if self.invincible then return end
-    damge = damage or 10
+    damage = damage or 10
 
     for i = 1, love.math.random(4, 8) do
         self.area:addGameObject('ExplodeParticle', self.x, self.y)
@@ -174,7 +175,7 @@ function Player:hit(damage)
 
     if damage >= 30 then
         self.invincible = true
-        self.timer:after('invincibility', 0.5, function()
+        self.timer:after('invincibility', 2, function()
             self.invincible = false
         end)
         
@@ -278,6 +279,9 @@ function Player:update(dt)
 end
 
 function Player:draw()
+   if self.invisible then return end
+
+
    pushRotate(self.x, self.y, self.r)
    love.graphics.setColor(default_color)
    for _, verticle_group in ipairs(self.polygons) do

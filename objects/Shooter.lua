@@ -10,14 +10,15 @@ function Shooter:new(area, x, y, opts)
     self.w, self.h = 12, 6
     self.collider = self.area.world:newPolygonCollider({
         self.w, 0, -self.w / 2, self.h,
-        -self.w, 0, 0,  -self.w / 2, -self.h,
+        -self.w, 0, -self.w / 2, -self.h,
     })
-
+    self.collider:setPosition(self.x, self.y)
     self.collider:setObject(self)
     self.collider:setCollisionClass('Enemy')
     self.v = - direction * random(20, 40)
     self.collider:setFixedRotation(false)
     self.collider:setAngle(direction ==1 and math.pi or 0)
+    self.collider:setFixedRotation(true)
     self.collider:setLinearVelocity(self.v,  0)
 
     self.hp = 100

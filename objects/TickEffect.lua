@@ -2,6 +2,7 @@ TickEffect = GameObject:extend()
 
 function TickEffect:new(area, x, y, opts)
     TickEffect.super.new(self, area, x, y, opts)
+    self.depth = 75
 
     self.w, self.h = 48, 32
     self.y_offset = 0
@@ -18,6 +19,6 @@ end
 
 function TickEffect:draw()
     love.graphics.setColor(default_color)
-    love.graphics.rectangle('fill', self.x - self.w / 2, self.y - self.h / 2, self.w, self.h)
+    love.graphics.rectangle('fill', self.x - self.w / 2, self.y, self.w, self.h)
     love.graphics.setColor(255, 255, 255)
 end

@@ -23,6 +23,16 @@ function Projectile:update(dt)
         self.v * math.sin(self.r)
     )
 
+    if self.collider:enter("Enemy") then
+        local collision_data = self.collider:getEnterCollisionData("Enemy")
+        local object = collision_data.collider:getObject()
+
+        if object then
+            object:hit(self.damage)
+            self:die()
+        end
+    end
+
     if self.x < 0 or self.y < 0 or self.x > gw or self.y > gh then
         self:die()
     end
