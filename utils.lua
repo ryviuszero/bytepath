@@ -48,3 +48,12 @@ function createIrregularPolygon(size, point_amount)
     end
     return points
 end
+
+function chanceList(...)
+    return {
+        chance_list = {},
+        chance_definitions = {}
+        
+
+    }
+end

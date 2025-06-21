@@ -42,6 +42,11 @@ Director : 各种资源的分配器？
 - 3. Every 16 seconds a resource (HP, SP or Boost) will be spawned;
 - 4. Every 30 seconds an attack will be spawned.
 
+
+- 难度和分数的对应关系？这个是什么作用？
+- chance_list 保障25%发生的事情一定是100次发生25次。不放回抽样？
+- director通过控制每个敌人的生成来控制难度（敌人会自然消亡，所以不必去在意敌人的清除）
+
 07/08/09 一起看，这三个可以
 
 
