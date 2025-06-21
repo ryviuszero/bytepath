@@ -28,7 +28,19 @@ https://github.com/love2d-community/awesome-love2d
 
 画敌人相关的对象，石头，发射物等等
 
-09 游戏循环？
+09 Director And Game Loop
+
+Director : 各种资源的分配器？
+涉及到难度曲线设计，这部分可以认真看看相关的逻辑。
+
+- 1. Every 22 seconds difficulty will go up;
+- 2. In the duration of each difficulty enemies will be spawned based on a point system
+- - Each difficulty (or round) has a certain amount of points available to be used;
+- - Enemies cost a fixed amount of points (harder enemies cost more);
+- - Higher difficulties have a higher amount of points available;
+- - Enemies are chosen to be spawned along the round's duration randomly until it runs out of points.
+- 3. Every 16 seconds a resource (HP, SP or Boost) will be spawned;
+- 4. Every 30 seconds an attack will be spawned.
 
 07/08/09 一起看，这三个可以
 
