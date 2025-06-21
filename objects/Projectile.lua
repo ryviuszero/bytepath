@@ -39,9 +39,6 @@ function Projectile:update(dt)
 end
 
 function Projectile:draw()
-    -- love.graphics.setColor(default_color)
-
-    -- love.graphics.circle('line', self.x, self.y, self.s)
     pushRotate(self.x, self.y, Vector(self.collider:getLinearVelocity()):angle()) 
     love.graphics.setLineWidth(self.s - self.s/4)
     love.graphics.setColor(self.color)
