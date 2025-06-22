@@ -68,6 +68,22 @@ function Stage:draw()
         love.graphics.print(self.score, gw - 20, 10, 0, 1, 1, math.floor(self.font:getWidth(self.score)/2), math.floor(self.font:getHeight()/2))
         love.graphics.setColor(1, 1, 1)
 
+        -- Skill points
+        love.graphics.setColor(skill_point_color)
+        love.graphics.print(skill_points .. 'SP', 10, 10, 0, 1, 1, 0, math.floor(self.font:getHeight()/2))
+        love.graphics.setColor(1, 1, 1)
+
+        -- Ammo
+        local r, g, b = unpack(ammo_color)
+        local ammo, max_ammo = self.player.ammo, self.player.max_ammo
+        love.graphics.setColor(r, g, b)
+        love.graphics.rectangle('fill', gw/2 - 52, 16, 48*(ammo/max_ammo), 4)
+        love.graphics.setColor(r - 32/255, g - 32/255, b - 32/255)
+        love.graphics.rectangle('line', gw/2 - 52, 16, 48, 4)
+        love.graphics.print('AMMO', gw/2 - 52 + 24, 26, 0, 1, 1, math.floor(self.font:getWidth('AMMO')/2), math.floor(self.font:getHeight()/2))
+        love.graphics.print(ammo .. '/' .. max_ammo, gw/2 - 52 + 24, 8, 0, 1, 1, math.floor(self.font:getWidth(ammo .. '/' .. max_ammo)/2), math.floor(self.font:getHeight()/2))
+        love.graphics.setColor(1, 1, 1)
+
         -- HP
         local r, g, b = unpack(hp_color)
         local hp, max_hp = self.player.hp, self.player.max_hp
@@ -77,6 +93,27 @@ function Stage:draw()
         love.graphics.rectangle('line', gw/2 - 52, gh - 16, 48, 4)
         love.graphics.print('HP', gw/2 - 52 + 24, gh - 24, 0, 1, 1, math.floor(self.font:getWidth('HP')/2), math.floor(self.font:getHeight()/2))
         love.graphics.print(hp .. '/' .. max_hp, gw/2 - 52 + 24, gh - 6, 0, 1, 1, math.floor(self.font:getWidth(hp .. '/' .. max_hp)/2), math.floor(self.font:getHeight()/2))
+        love.graphics.setColor(1, 1, 1)
+
+        -- Boost 
+        local r, g, b = unpack(boost_color)
+        local boost, max_boost = self.player.boost, self.player.max_boost
+        love.graphics.setColor(r, g, b)
+        love.graphics.rectangle('fill', gw/2 + 4, 16, 48*(boost/max_boost), 4)
+        love.graphics.setColor(r - 32/255, g - 32/255, b - 32/255)
+        love.graphics.rectangle('line', gw/2 + 4, 16, 48, 4)
+        love.graphics.print('BOOST', gw/2 + 4 + 24, 26, 0, 1, 1, math.floor(self.font:getWidth('AMMO')/2), math.floor(self.font:getHeight()/2))
+        love.graphics.print(math.floor(boost) .. '/' .. math.floor(max_boost), gw/2 + 4 + 24, 8, 
+        0, 1, 1, math.floor(self.font:getWidth(math.floor(boost) .. '/' .. math.floor(max_boost))/2), math.floor(self.font:getHeight()/2))
+        love.graphics.setColor(1, 1, 1)
+
+        -- Cycle
+        local r, g, b = unpack(default_color)
+        love.graphics.setColor(r, g, b)
+        love.graphics.rectangle('fill', gw/2 + 4, gh - 16, 48*(self.player.tick_timer/self.player.tick_cooldown), 4)
+        love.graphics.setColor(r - 32/255, g - 32/255, b - 32/255)
+        love.graphics.rectangle('line', gw/2 + 4, gh - 16, 48, 4)
+        love.graphics.print('CYCLE', gw/2 + 4 + 24, gh - 24, 0, 1, 1, math.floor(self.font:getWidth('CYCLE')/2), math.floor(self.font:getHeight()/2))
         love.graphics.setColor(1, 1, 1)
 
     love.graphics.setCanvas()

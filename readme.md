@@ -49,6 +49,36 @@ Director : 各种资源的分配器？
 
 07/08/09 一起看，这三个可以
 
+10 关于代码的最佳实践
+
+有讨论对于团队和个人而言，特别是个人而且，怎么做虽然不是传统意义上的最佳实践，但实际操作上反而会更好一些。
+
+比如： 
+
+### 全局变量的问题
+
+全局变量其实非常不错，且高效率。并且游戏不太需要长期维护。
+给出了可以用全部变量的地方
+1. the first type are global variables that are read from a lot and rarely written to. 
+频繁读，但是基本不写入的变量。（全局变量的问题就是多个地方同时写会产生非预期行为）
+2. The second type are global variables that are written to a lot and rarely read from. ？
+单纯只是写。
+3. 频繁读写的，的确不适合全局变量。
+
+### Abstracting vs. Copypasting
+
+抽象 vs 复制粘贴的问题
+
+### Player Class Size
+类大小问题
+
+### Entity Component Systems
+ECS开发模式
+
+
+
+
+
 
 
 
