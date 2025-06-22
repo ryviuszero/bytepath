@@ -9,6 +9,7 @@ function Rock:new(area, x, y, opts)
 
     self.w, self.h = 8, 8
     self.collider = self.area.world:newPolygonCollider(createIrregularPolygon(8))
+    self.collider:setPosition(self.x, self.y)
     self.collider:setObject(self)
     self.collider:setCollisionClass('Enemy')
     self.collider:setFixedRotation(false)

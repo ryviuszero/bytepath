@@ -23,6 +23,8 @@ function love.load()
 
     time = 0
 
+    -- 有些函数在新版本被丢弃了，这里设置为不显示这个提示信息了。
+    love.setDeprecationOutput(false)
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.setLineStyle('rough')
     love.graphics.setBackgroundColor(background_color)

@@ -294,6 +294,7 @@ end
 
 function Player:addAmmo(amount)
     self.ammo = math.min(self.ammo + amount, self.max_ammo)
+    current_room.score = current_room.score + 50
 end
 
 function Player:removeHP(amount)
