@@ -70,7 +70,7 @@ function love.draw()
     if flash_frames then
         love.graphics.setColor(background_color)
         love.graphics.rectangle('fill', 0, 0, sx * gw, sy * gh)
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(1, 1, 1)
     end
 end
 

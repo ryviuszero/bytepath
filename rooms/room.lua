@@ -66,18 +66,18 @@ function Stage:draw()
         -- Score
         love.graphics.setColor(default_color)
         love.graphics.print(self.score, gw - 20, 10, 0, 1, 1, math.floor(self.font:getWidth(self.score)/2), math.floor(self.font:getHeight()/2))
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(1, 1, 1)
 
         -- HP
         local r, g, b = unpack(hp_color)
         local hp, max_hp = self.player.hp, self.player.max_hp
         love.graphics.setColor(r, g, b)
         love.graphics.rectangle('fill', gw/2 - 52, gh - 16, 48*(hp/max_hp), 4)
-        love.graphics.setColor(r - 32, g - 32, b - 32)
+        love.graphics.setColor(r - 32/255, g - 32/255, b - 32/255)
         love.graphics.rectangle('line', gw/2 - 52, gh - 16, 48, 4)
         love.graphics.print('HP', gw/2 - 52 + 24, gh - 24, 0, 1, 1, math.floor(self.font:getWidth('HP')/2), math.floor(self.font:getHeight()/2))
         love.graphics.print(hp .. '/' .. max_hp, gw/2 - 52 + 24, gh - 6, 0, 1, 1, math.floor(self.font:getWidth(hp .. '/' .. max_hp)/2), math.floor(self.font:getHeight()/2))
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(1, 1, 1)
 
     love.graphics.setCanvas()
 
