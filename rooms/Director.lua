@@ -23,4 +23,8 @@ function Director:new(stage)
         ['Shooter'] = 2
     }
 
+    self.enemy_spawn_chances = {
+        [1] = chanc
+    }
+
 end
