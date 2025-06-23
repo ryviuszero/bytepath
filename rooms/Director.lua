@@ -47,6 +47,7 @@ end
 function Director:update(dt)
     self.timer:update(dt)
 
+    -- Difficulty
     self.round_timer = self.round_timer + dt
     if self.round_timer > self.round_duration then
         self.round_timer = 0

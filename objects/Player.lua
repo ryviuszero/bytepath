@@ -1,7 +1,7 @@
 Player = GameObject:extend()
 
 function Player:new(area, x, y, opts)
-    Player.super:new(area, x, y, opts)
+    Player.super.new(self, area, x, y, opts)
 
     self.x, self.y = x, y
     self.w, self.h = 12, 12
@@ -133,6 +133,10 @@ function Player:new(area, x, y, opts)
         end
     end)
 
+    -- ES
+    self.energy_shield_recharge_cooldown = 2
+    self.energy_shield_recharge_amount = 1
+
     -- Flats
     self.flat_hp = 0
     self.ammo_gain = 0
@@ -151,6 +155,7 @@ function Player:new(area, x, y, opts)
     self.gain_aspd_boost_on_kill_chance = 0
     self.launch_homing_projectile_while_boosting_chance = 0
     self.shield_projectile_chance = 0
+    self.added_chance_to_all_on_kill_events = 0
 
     -- Booleans
     self.increased_luck_while_boosting = false
@@ -158,6 +163,9 @@ function Player:new(area, x, y, opts)
     self.wavy_projectiles = false
     self.fast_slow = false
     self.slow_fast = false
+
+    -- Conversions
+    self.ammo_to_aspd = 0
 
     -- treeToPlayer(self)
     self:setStats()
@@ -168,6 +176,10 @@ function Player:setStats()
     -- HP
     self.max_hp = (self.max_hp + self.flat_hp) * self.hp_multiplier
     self.hp = self.max_hp
+
+    if self.energy_shield then
+        self.invulerability_timer_multiplier = self.invulerability_timer_multiplier / 2
+    end
 end
 
 function Player:generateChances()
@@ -175,7 +187,11 @@ function Player:generateChances()
     
     for k, v in pairs(self) do
         if k:find('_chance') and type(v) == 'number' then
-            self.chances[k] = chanceList({true, math.ceil(v)}, {false, 100-math.ceil(v)})
+            if k:find('_on_kill') and v > 0 then
+                self.chances[k] = chanceList({true, math.ceil(v+self.added_chance_to_all_on_kill_events)}, {false, 100-math.ceil(v+self.added_chance_to_all_on_kill_events)})
+            else
+                self.chances[k] = chanceList({true, math.ceil(v)}, {false, 100-math.ceil(v)})
+            end
         end
     end
 
@@ -396,6 +412,47 @@ function Player:shoot()
     elseif self.attack == 'Homing' then
         self.ammo = self.ammo - attacks[self.attack].ammo
         self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
+    elseif self.attack == 'Blast' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        for i = 1, 12 do
+            local random_angle = random(-math.pi/6, math.pi/6)
+            self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r + random_angle), self.y + 1.5*d*math.sin(self.r + random_angle), 
+                table.merge({r = self.r + random_angle, attack = self.attack, v = random(500, 600)}, mods))
+        end
+        camera:shake(4, 60, 0.4)
+
+    elseif self.attack == 'Spin' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), table.merge({r = self.r, attack = self.attack}, mods))
+
+    elseif self.attack == 'Bounce' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), table.merge({r = self.r, attack = self.attack, bounce = 4}, mods))
+
+    elseif self.attack == 'Lightning' then
+        local x1, y1 = self.x + d*math.cos(self.r), self.y + d*math.sin(self.r)
+        local cx, cy = x1 + 24*math.cos(self.r), y1 + 24*math.sin(self.r)
+
+        -- Find closest enemy
+        local nearby_enemies = self.area:getAllGameObjectsThat(function(e)
+            for _, enemy in ipairs(enemies) do
+                if e:is(_G[enemy]) and (distance(e.x, e.y, cx, cy) < 64) then
+                    return true
+                end
+            end
+        end)
+        table.sort(nearby_enemies, function(a, b) return distance(a.x, a.y, cx, cy) < distance(b.x, b.y, cx, cy) end)
+        local closest_enemy = nearby_enemies[1]
+
+        -- Attack closest enemy
+        if closest_enemy then
+            self.ammo = self.ammo - attacks[self.attack].ammo
+            closest_enemy:hit()
+            local x2, y2 = closest_enemy.x, closest_enemy.y
+            self.area:addGameObject('LightningLine', 0, 0, {x1 = x1, y1 = y1, x2 = x2, y2 = y2})
+            for i = 1, love.math.random(4, 8) do self.area:addGameObject('ExplodeParticle', x1, y1, {color = table.random({default_color, boost_color})}) end
+            for i = 1, love.math.random(4, 8) do self.area:addGameObject('ExplodeParticle', x2, y2, {color = table.random({default_color, boost_color})}) end
+        end
     end
 
     if self.ammo <= 0 then
@@ -413,6 +470,15 @@ end
 function Player:hit(damage)
     if self.invincible then return end
     damage = damage or 10
+
+    if self.enegry_shield then
+        damage = damage * 2
+        self.timer:after('energy_shield_recharge_cooldown', self.energy_shield_recharge_cooldown, function()
+            self.timer:every('energy_shield_recharge_amount', 0.25, function()
+                self:addHP(self.energy_shield_recharge_amount)
+            end)
+        end)
+    end
 
     for i = 1, love.math.random(4, 8) do
         self.area:addGameObject('ExplodeParticle', self.x, self.y)
@@ -455,6 +521,9 @@ function Player:update(dt)
     -- Stat boosts
     if self.inside_haste_area then self.aspd_multiplier:increase(100) end
     if self.aspd_boosting then self.aspd_multiplier:increase(100) end
+
+    -- Conversions
+    if self.ammo_to_aspd > 0 then self.aspd_multiplier:increase((self.ammo_to_aspd/100)*(self.max_ammo - 100)) end
     self.aspd_multiplier:update(dt)
 
 
