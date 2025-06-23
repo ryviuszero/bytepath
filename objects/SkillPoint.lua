@@ -1,7 +1,7 @@
-SKillPoint = GameObject:extend()
+SkillPoint = GameObject:extend()
 
 function SkillPoint:new(area, x, y, opts)
-    SKillPoint.super.new(self, area, x, y, opts)
+    SkillPoint.super.new(self, area, x, y, opts)
 
     local direction = table.random({-1, 1})
     self.x = gw / 2 + direction * random(gw/2 + 48)
@@ -16,8 +16,8 @@ function SkillPoint:new(area, x, y, opts)
     self.collider:applyAngularImpulse(random(-24, 24))
 end
 
-function SKillPoint:update(dt)
-    SKillPoint.super.update(self, dt)
+function SkillPoint:update(dt)
+    SkillPoint.super.update(self, dt)
 
     self.collider:setLinearVelocity(self.v, 0)
 end
@@ -32,9 +32,9 @@ function SkillPoint:draw()
     love.graphics.setColor(default_color)
 end
 
-function SKillPoint:die()
+function SkillPoint:die()
     self.dead = true
     self.area:addGameObject('BoostEffect', self.x, self.y, {color = skill_point_color, w = self.w, h = self.h})
     self.area:addGameObject('InfoText', self.x + table.random({-1, 1})*self.w, self.y + table.random({-1, 1})*self.h, {color = skill_point_color, text = '+1 SP'})
-    
+
 end

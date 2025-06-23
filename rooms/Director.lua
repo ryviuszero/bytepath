@@ -7,6 +7,10 @@ function Director:new(stage)
     self.difficulty = 1
     self.round_duration = 22
     self.round_timer = 0
+    self.resource_duration = 16
+    self.resource_timer = 0
+    self.attack_duration = 30
+    self.attack_timer = 0
 
     self.difficulty_to_points = {}
     self.difficulty_to_points[1] = 16
@@ -33,8 +37,10 @@ function Director:new(stage)
     for i = 5, 1024 do
         self.enemy_spawn_chances[i] = chanceList({"Rock" , love.math.random(2, 12)}, {'Shooter', love.math.random(2, 12)})
     end
+    self.resource_spawn_chances = chanceList({'Boost', 28}, {'HP', 14*self.stage.player.hp_spawn_chance_multiplier}, {'SkillPoint', 58})
 
     self:setEnemySpawnsForThisRound()
+    self.stage.area:addGameObject('Attack')
 
 end
 
@@ -46,6 +52,19 @@ function Director:update(dt)
         self.round_timer = 0
         self.difficulty = self.difficulty + 1
         self:setEnemySpawnsForThisRound()
+    end
+
+    -- Resources
+    self.resource_timer = self.resource_timer + dt
+    if self.resource_timer > self.resource_duration then
+        self.resource_timer = 0
+    end
+
+    -- Attack
+    self.attack_timer = self.attack_timer + dt
+    if self.attack_timer > self.attack_duration then
+        self.attack_timer = 0
+        self.stage.area:addGameObject('Attack')
     end
 end
 

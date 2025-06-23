@@ -110,7 +110,7 @@ function Stage:draw()
         -- Cycle
         local r, g, b = unpack(default_color)
         love.graphics.setColor(r, g, b)
-        love.graphics.rectangle('fill', gw/2 + 4, gh - 16, 48*(self.player.tick_timer/self.player.tick_cooldown), 4)
+        love.graphics.rectangle('fill', gw/2 + 4, gh - 16, 48*(self.player.cycle_timer/self.player.cycle_cooldown), 4)
         love.graphics.setColor(r - 32/255, g - 32/255, b - 32/255)
         love.graphics.rectangle('line', gw/2 + 4, gh - 16, 48, 4)
         love.graphics.print('CYCLE', gw/2 + 4 + 24, gh - 24, 0, 1, 1, math.floor(self.font:getWidth('CYCLE')/2), math.floor(self.font:getHeight()/2))

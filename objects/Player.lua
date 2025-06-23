@@ -17,8 +17,8 @@ function Player:new(area, x, y, opts)
     self.a = 100
 
     -- Cycle
-    self.tick_timer = 0
-    self.tick_cooldown = 5
+    self.cycle_timer = 0
+    self.cycle_cooldown = 5
 
 
     -- self.timer:every(5, function() self:tick() end)
@@ -161,7 +161,7 @@ function Player:new(area, x, y, opts)
 
     -- treeToPlayer(self)
     self:setStats()
-    self:generateChance()
+    self:generateChances()
 end
 
 function Player:setStats()
@@ -358,6 +358,10 @@ function Player:shoot()
     local d = 1.2 * self.w
     self.area:addGameObject('ShootEffect', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {player = self, d = d})
 
+    local mods = {
+        shield = self.chances.shield_projectile_chance:next()
+    }
+
     if self.attack == 'Neutral' then
         self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
     elseif self.attack == 'Double' then
@@ -389,8 +393,10 @@ function Player:shoot()
         self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
         self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r - math.pi/2), self.y + 1.5*d*math.sin(self.r - math.pi/2), {r = self.r - math.pi/2, attack = self.attack})
         self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r + math.pi/2), self.y + 1.5*d*math.sin(self.r + math.pi/2), {r = self.r + math.pi/2, attack = self.attack})
+    elseif self.attack == 'Homing' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.area:addGameObject('Projectile', self.x + 1.5*d*math.cos(self.r), self.y + 1.5*d*math.sin(self.r), {r = self.r, attack = self.attack})
     end
-
 
     if self.ammo <= 0 then
         self:setAttack('Neutral')
@@ -439,6 +445,8 @@ function Player:die()
     -- slow的作用？
     slow(0.15, 1)
     for i = 1, love.math.random(8, 12) do self.area:addGameObject("ExplodeParticle", self.x, self.y) end
+
+    current_room:finish()
 end
 
 function Player:update(dt)
@@ -463,13 +471,14 @@ function Player:update(dt)
         if object:is(Ammo) then
             object:die()
             self:addAmmo(5)
+            self:onAmmoPickup()
         elseif object:is(Boost) then
             object:die()
         
         elseif object:is(SkillPoint) then
             object:die()
 
-        elseif object(Attack) then
+        elseif object:is(Attack) then
             object:die()
             self:setAttack(object.attack)
         end
@@ -485,7 +494,7 @@ function Player:update(dt)
 
     -- Cycle
     self.cycle_timer = self.cycle_timer + dt
-    if self.cycle_timer > self.tick_cooldown then
+    if self.cycle_timer > self.cycle_cooldown then
         self.cycle_timer = 0
         self:cycle()
     end
@@ -498,17 +507,28 @@ function Player:update(dt)
     self.max_v = self.base_max_v
     self.boosting = false
     
+    if input:pressed('up') and self.boost > 1 and self.can_boost then
+        self:onBoostStart()
+    end
+
+    if input:released('up') then
+        self:onBoostEnd()
+    end
+
     if input:down('up') and self.boost > 1 and self.can_boost then
         self.boosting = true
-        self.max_v = self.base_max_v * 1.5
+        self.max_v = self.base_max_v * 2
         self.boost = self.boost - 50 * dt
         if self.boost <= 1 then
             self.boosting = false
             self.can_boost = false
             self.boost_timer = 0
+            self:onBoostEnd()
         end
     end
 
+    if input:pressed('down') and self.boost > 1 and self.can_boost then self:onBoostStart() end
+    if input:released('down') then self:onBoostEnd() end
     if input:down('down') and self.boost > 1 and self.can_boost then
         self.boosting = true
         self.max_v = self.base_max_v * 0.5
@@ -517,8 +537,10 @@ function Player:update(dt)
             self.boosting = false
             self.can_boost = false
             self.boost_timer = 0
+            self:onBoostEnd()
         end
     end
+
     self.trail_color = skill_point_color
     if self.boosting then
         self.trail_color = boost_color
@@ -622,7 +644,7 @@ function Player:onBoostStart()
 end
 
 function Player:onBoostEnd()
-    self.tiemr:cancel('launch_homing_projectile_while_boosting_chance')
+    self.timer:cancel('launch_homing_projectile_while_boosting_chance')
 
     if self.increased_luck_while_boosting then
         self.luck_boosting = false
