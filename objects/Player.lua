@@ -133,6 +133,52 @@ function Player:new(area, x, y, opts)
         end
     end)
 
+    -- Flats
+    self.flat_hp = 0
+    self.ammo_gain = 0
+
+    -- Multipliers
+    self.hp_multiplier = 1
+    self.aspd_multiplier = Stat(1)
+    self.luck_multiplier = 1
+    self.hp_spawn_chance_multiplier = 1
+    self.enemy_spawn_rate_multiplier = 1
+
+    -- Chances
+    self.launch_homing_projectile_on_ammo_pickup_chance = 0
+    self.spawn_sp_on_cycle_chance = 0
+    self.barrage_on_kill_chance = 0
+    self.gain_aspd_boost_on_kill_chance = 0
+    self.launch_homing_projectile_while_boosting_chance = 0
+    self.shield_projectile_chance = 0
+
+    -- Booleans
+    self.increased_luck_while_boosting = false
+    self.projectile_ninety_degree_change = false
+    self.wavy_projectiles = false
+    self.fast_slow = false
+    self.slow_fast = false
+
+    -- treeToPlayer(self)
+    self:setStats()
+    self:generateChance()
+end
+
+function Player:setStats()
+    -- HP
+    self.max_hp = (self.max_hp + self.flat_hp) * self.hp_multiplier
+    self.hp = self.max_hp
+end
+
+function Player:generateChances()
+    self.chances = {}
+    
+    for k, v in pairs(self) do
+        if k:find('_chance') and type(v) == 'number' then
+            self.chances[k] = chanceList({true, math.ceil(v)}, {false, 100-math.ceil(v)})
+        end
+    end
+
 end
 
 function Player:init_ship()
@@ -302,6 +348,12 @@ function Player:init_ship()
     end
 end
 
+function Player:cycle()
+    self.area:addGameObject('CycleEffect', self.x, self.y, {parent = self})
+    self:onCycle()
+end
+
+
 function Player:shoot()
     local d = 1.2 * self.w
     self.area:addGameObject('ShootEffect', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {player = self, d = d})
@@ -344,11 +396,6 @@ function Player:shoot()
         self:setAttack('Neutral')
         self.ammo = self.max_ammo
     end
-end
-
-
-function Player:tick()
-    self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
 end
 
 function Player:setAttack(attack)
@@ -397,6 +444,12 @@ end
 function Player:update(dt)
     Player.super.update(self, dt)
 
+    -- Stat boosts
+    if self.inside_haste_area then self.aspd_multiplier:increase(100) end
+    if self.aspd_boosting then self.aspd_multiplier:increase(100) end
+    self.aspd_multiplier:update(dt)
+
+
     -- Collision
     if self.x < 0 or self.x > gw or
        self.y < 0 or self.y > gh then
@@ -412,6 +465,13 @@ function Player:update(dt)
             self:addAmmo(5)
         elseif object:is(Boost) then
             object:die()
+        
+        elseif object:is(SkillPoint) then
+            object:die()
+
+        elseif object(Attack) then
+            object:die()
+            self:setAttack(object.attack)
         end
     end
 
@@ -424,11 +484,12 @@ function Player:update(dt)
     end
 
     -- Cycle
-    self.tick_timer = self.tick_timer + dt
-    if self.tick_timer > self.tick_cooldown then
-        self.tick_timer = 0
-        self:tick()
+    self.cycle_timer = self.cycle_timer + dt
+    if self.cycle_timer > self.tick_cooldown then
+        self.cycle_timer = 0
+        self:cycle()
     end
+
 
     -- Boost
     self.boost = math.min(self.boost + 10 * dt, self.max_boost)
@@ -497,6 +558,10 @@ function Player:addAmmo(amount)
     current_room.score = current_room.score + 50
 end
 
+function Player:addHP(amount)
+    self.hp = math.min(self.hp + amount, self.max_hp)
+end
+
 function Player:removeHP(amount)
     self.hp = self.hp - (amount or 5)
     if self.hp <= 0 then
@@ -504,3 +569,65 @@ function Player:removeHP(amount)
         self:die()
     end
 end
+
+function Player:onAmmoPickup()
+    if self.chances.launch_homing_projectile_on_ammo_pickup_chance:next() then
+        local d = 1.2 * self.w
+        self.area:addGameObject('Projectile', self.x + d * math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing'})
+        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
+    end
+end
+
+function Player:onCycle()
+    if self.chances.spawn_sp_on_cycle_chance:next() then
+        self.area:addGameObject('SkillPoint')
+        self.area:addGameObject('InfoText', self.x, self.y, {text = 'SP Spawn!', color = skill_point_color})
+    end
+end
+
+function Player:onKill()
+    if self.chances.barrage_on_kill_chance:next() then
+        for i = 1, 8 do
+            self.timer:after((i-1)*0.05, function()
+                local random_angle = random(-math.pi/8, math.pi/8)
+                local d = 2.2*self.w
+                self.area:addGameObject('Projectile', self.x + d*math.cos(self.r + random_angle), self.y + d*math.sin(self.r + random_angle), {r = self.r + random_angle, attack = self.attack})
+            end)
+        end
+
+        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Barrage!!!'})
+    end
+
+    if self.chances.gain_aspd_boost_on_kill_chance:next() then
+        self.aspd_boosting = true
+        self.timer:after(4, function() self.aspd_boosting = false end)
+        self.area:addGameObject('InfoText', self.x, self.y, {text = 'ASPD Boost!', color = ammo_color})
+    end
+end
+
+function Player:onBoostStart()
+    self.timer:every('launch_homing_projectile_while_boosting_chance', 0.2, function()
+        if self.chances.launch_homing_projectile_while_boosting_chance:next() then
+            local d = 1.2*self.w
+            self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing'})
+            self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
+        end
+    end)
+
+    if self.increased_luck_while_boosting then
+        self.luck_boosting = true
+        self.luck_multiplier = self.luck_multiplier * 2
+        self:generateChances()
+    end
+end
+
+function Player:onBoostEnd()
+    self.tiemr:cancel('launch_homing_projectile_while_boosting_chance')
+
+    if self.increased_luck_while_boosting then
+        self.luck_boosting = false
+        self.luck_multiplier = self.luck_multiplier / 2
+        self:generateChances()
+    end
+end
+
