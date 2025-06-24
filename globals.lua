@@ -40,4 +40,5 @@ attacks = {
 -- Globals
 skill_points = 0
 
-
+-- Enemies
+enemies = {'Rock', 'Shooter'}
