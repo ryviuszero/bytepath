@@ -34,8 +34,6 @@ function Stage:new()
 
     self.player = self.area:addGameObject('Player', gw / 2, gh / 2)
 
-    -- input:bind('p', function() self.area:addGameObject('Boost', 0, 0) end)
-    -- input:bind('o', function() self.area:addGameObject('Shooter', 0, 0) end)
 
     self.font = fonts.m5x7_16
     self.director = Director(self)
