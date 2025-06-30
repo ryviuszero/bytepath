@@ -45,7 +45,7 @@ function love.load()
     init_input()
 
     current_room = nil
-    gotoRoom("SkillTree")
+    gotoRoom("Console")
     
     resize(2)
 
@@ -154,6 +154,8 @@ function init_input()
     input:bind('mouse1', 'left_click')
     input:bind('wheelup', 'zoom_in')
     input:bind('wheeldown', 'zoom_out')
+    input:bind('return', 'return')
+    input:bind('backspace', 'backspace')
 end
 
 -- Room --
