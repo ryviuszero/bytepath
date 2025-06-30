@@ -106,10 +106,15 @@ local axis_to_button = {leftx = 'leftx', lefty = 'lefty', rightx = 'rightx', rig
 
 function Input:down(action)
     for _, key in ipairs(self.binds[action]) do
-        if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or 0)) then
+        if key_to_button[key] then
+            if love.mouse.isDown(key_to_button[key] or 0) then return true end
+        elseif love.keyboard.isDown(key) then
             return true
         end
-        
+        -- if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or 0)) then
+        --     return true
+        -- end
+
         -- Supports only 1 gamepad, add more later...
         if self.joysticks[1] then
             if axis_to_button[key] then

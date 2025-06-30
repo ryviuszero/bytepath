@@ -16,6 +16,7 @@ require 'libraries/utf8'
 require 'GameObject'
 require 'globals'
 require 'utils'
+require 'tree'
 
 
 
@@ -44,7 +45,7 @@ function love.load()
     init_input()
 
     current_room = nil
-    gotoRoom("Stage")
+    gotoRoom("SkillTree")
     
     resize(2)
 
@@ -150,6 +151,9 @@ function init_input()
     input:bind('right', 'right')
     input:bind('up', 'up')
     input:bind('down', 'down')
+    input:bind('mouse1', 'left_click')
+    input:bind('wheelup', 'zoom_in')
+    input:bind('wheeldown', 'zoom_out')
 end
 
 -- Room --

@@ -39,6 +39,7 @@ attacks = {
 
 -- Globals
 skill_points = 0
+bought_node_indexes = {}
 
 -- Enemies
 enemies = {'Rock', 'Shooter'}

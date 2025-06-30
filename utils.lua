@@ -16,6 +16,16 @@ function table.random(t)
     return t[love.math.random(1, #t)]
 end
 
+function table.copy(t)
+    local copy
+    if type(t) == 'table' then
+        copy = {}
+        for k, v in next, t, nil do copy[table.copy(k)] = table.copy(v) end
+        setmetatable(copy, table.copy(getmetatable(t)))
+    else copy = t end
+    return copy
+end
+
 function pushRotate(x, y, r)
     love.graphics.push()
     love.graphics.translate(x, y)
@@ -48,6 +58,7 @@ function createIrregularPolygon(size, point_amount)
     end
     return points
 end
+
 
 function chanceList(...)
     return {
