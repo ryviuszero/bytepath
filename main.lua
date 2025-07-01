@@ -10,6 +10,7 @@ Camera = require 'libraries/hump/camera'
 Physics = require 'libraries/windfield'
 Vector = require 'libraries/hump/vector'
 draft = require('libraries/draft/draft')()
+bitser = require 'libraries/bitser/bitser'
 
 
 require 'libraries/utf8'
@@ -92,6 +93,21 @@ function slow(amount, duration)
     slow_amount = amount
     -- timer:tween 的各个参数后面也了解一下？
     timer:tween('slow', duration, _G, {slow_amount = 1}, 'in-out-cubic')
+end
+
+-- Save/Load --
+function save()
+    local save_data = {}
+
+    bitser.dumpLoveFile('save', save_data)
+end
+
+function load()
+    if love.filesystem.getInfo('save') then
+        local save_data = bitser.loadLoveFile('save')
+    else
+        first_run_ever = true
+    end
 end
 
 
