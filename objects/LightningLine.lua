@@ -50,7 +50,7 @@ function LightningLine:draw()
         love.graphics.line(line.x1, line.y1, line.x2, line.y2) 
     end
     love.graphics.setLineWidth(1)
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 function LightningLine:destroy()

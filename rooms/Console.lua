@@ -53,18 +53,18 @@ function Console:draw()
     for _, line in ipairs(self.lines) do love.graphics.draw(line.text, line.x, line.y) end
     if self.inputting and self.cursor_visible then
         local r, g, b = unpack(default_color)
-        love.graphics.setColor(r, g, b, 96)
+        love.graphics.setColor(r, g, b, 96/255)
         local input_text = ''
         for _, character in ipairs(self.input_text) do input_text = input_text .. character end
         local x = self.font:getWidth('[root]arch~ ' .. input_text)
         love.graphics.rectangle('fill', 8 + x, self.lines[#self.lines].y, self.font:getWidth('w'), self.font:getHeight())
-        love.graphics.setColor(r, g, b, 255)
+        love.graphics.setColor(r, g, b, 1)
     end
     for _, module in ipairs(self.modules) do module:draw() end
     camera:detach()
     love.graphics.setCanvas()
 
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setBlendMode('alpha', 'premultiplied')
     love.graphics.draw(self.main_canvas, 0, 0, 0, sx, sy)
     love.graphics.setBlendMode('alpha')

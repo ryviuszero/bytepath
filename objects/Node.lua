@@ -30,8 +30,8 @@ function Node:draw()
     local r, g, b = unpack(default_color)
     love.graphics.setColor(background_color)
     love.graphics.circle('fill', self.x, self.y, self.w)
-    if self.bought then love.graphics.setColor(r, g, b, 255)
-    else love.graphics.setColor(r, g, b, 32) end
+    if self.bought then love.graphics.setColor(r, g, b, 1)
+    else love.graphics.setColor(r, g, b, 32/255) end
     love.graphics.circle('line', self.x, self.y, self.w)
-    love.graphics.setColor(r, g, b, 255)
+    love.graphics.setColor(r, g, b, 1)
 end

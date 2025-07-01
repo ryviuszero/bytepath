@@ -12,8 +12,8 @@ end
 
 function Line:draw()
     local r, g, b = unpack(default_color)
-    if self.active then love.graphics.setColor(r, g, b, 255)
-    else love.graphics.setColor(r, g, b, 32) end
+    if self.active then love.graphics.setColor(r, g, b, 1)
+    else love.graphics.setColor(r, g, b, 32/255) end
     love.graphics.line(self.node_1.x, self.node_1.y, self.node_2.x, self.node_2.y)
-    love.graphics.setColor(r, g, b, 255)
+    love.graphics.setColor(r, g, b, 1)
 end

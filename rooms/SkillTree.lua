@@ -81,7 +81,7 @@ function SkillTree:draw()
                 -- Draw rectangle
                 local mx, my = love.mouse.getPosition() 
                 mx, my = mx/sx, my/sy
-                love.graphics.setColor(0, 0, 0, 222)
+                love.graphics.setColor(0, 0, 0, 222/255)
                 love.graphics.rectangle('fill', mx, my, 16 + max_text_width, font:getHeight() + (#stats/3)*font:getHeight())
                 -- Draw text
                 love.graphics.setColor(default_color)
@@ -93,7 +93,7 @@ function SkillTree:draw()
         love.graphics.setColor(default_color)
     love.graphics.setCanvas()
 
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setBlendMode('alpha', 'premultiplied')
     love.graphics.draw(self.main_canvas, 0, 0, 0, sx, sy)
     love.graphics.setBlendMode('alpha')
