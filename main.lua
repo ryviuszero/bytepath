@@ -46,7 +46,7 @@ function love.load()
     init_input()
 
     current_room = nil
-    gotoRoom("Console")
+    gotoRoom("Stage")
     
     resize(2)
 
