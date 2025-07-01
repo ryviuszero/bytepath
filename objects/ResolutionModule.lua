@@ -3,7 +3,7 @@ ResolutionModule = Object:extend()
 function ResolutionModule:new(console, y)
     self.console = console
 
-    self.console:addLine(0.02, 'Available resolutions:')
+    self.console:addLine(0.02, 'Available resolutions: ')
     self.console:addLine(0.04, '    480x270')
     self.console:addLine(0.06, '    960x540')
     self.console:addLine(0.08, '    1440x810')

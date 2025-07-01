@@ -80,6 +80,10 @@ function resize(s)
     sx, sy = s, s
 end
 
+function love.textinput(t)
+    if current_room.textinput then current_room:textinput(t) end
+end
+
 function flash(frames)
     flash_frames = frames
 end
